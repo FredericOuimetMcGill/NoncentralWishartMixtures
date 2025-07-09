@@ -169,13 +169,15 @@ for(r in seq_len(nrow(nh_bal))){
 
 ## ----- 5. Form Beta-II test statistics ------------------------------------
 
-Sigma_hat <- diag(d)
-Vinv <- solve(conjugate(SOP_E, Sigma_hat))
+Sigma <- diag(d)
+
+Sigmainv <- solve(Sigma)
+Vinv <- solve(conjugate(SOP_E, Sigmainv))
 
 # Test statistics
-T_A   <- conjugate(conjugate(SOP_A, Sigma), Vinv)
-T_B   <- conjugate(conjugate(SOP_B, Sigma), Vinv)
-T_AB  <- conjugate(conjugate(SOP_AB, Sigma), Vinv)
+T_A   <- conjugate(conjugate(SOP_A, Sigmainv), Vinv)
+T_B   <- conjugate(conjugate(SOP_B, Sigmainv), Vinv)
+T_AB  <- conjugate(conjugate(SOP_AB, Sigmainv), Vinv)
 
 # Monte-Carlo p-values
 p_A  <- pvalue_matrix_beta_MC(T_A, (a - 1)/2, a * b * (n - 1)/2)
@@ -200,7 +202,7 @@ p_uni <- data.frame(
 ) |>
   mutate(across(where(is.numeric), \(x) round(x, deci)))
 
-# ## ----- 6. Univariate two-way ANOVAs (from scratch, this is a test) --------
+# ## ----- 6. Univariate two-way ANOVAs (from scratch, this is a test) ------
 # 
 # # helper: balanced-design two-way ANOVA p-values without aov()
 # two_way_anova_p <- function(y, facA, facB, a, b, n) {
